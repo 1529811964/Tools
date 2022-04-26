@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Tools.Option"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:local="clr-namespace:Tools"
+             xmlns:settingtype="clr-namespace:Tools_IPlugin;assembly=Tools_IPlugin"
+             mc:Ignorable="d" 
+             d:DesignHeight="25.24" d:DesignWidth="233">
+    <UserControl.Resources>
+        <DataTemplate x:Key="StringSetting">
+            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Width="122"/>
+        </DataTemplate>
+        <DataTemplate x:Key="SwitchSetting">
+            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Height="24" Width="46"/>
+        </DataTemplate>
+        <DataTemplate x:Key="HotkeySetting">
+            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Tag="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=code, Mode=TwoWay}" Width="122"/>
+        </DataTemplate>
+        <Style x:Key="SettingStyle" TargetType="ContentControl">
+            <Setter Property="ContentTemplate" Value="{StaticResource StringSetting}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=type}" Value="{x:Static settingtype:SettingType.String}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource StringSetting}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=type}" Value="{x:Static settingtype:SettingType.Switch}" >
+                    <Setter Property="ContentTemplate" Value="{StaticResource SwitchSetting}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=type}" Value="{x:Static settingtype:SettingType.Hotkey}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource HotkeySetting}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Border Margin="0,2,0,2">
+            <DockPanel LastChildFill="False">
+                <Label DockPanel.Dock="Left" BorderThickness="0,0,0,0" Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=key}"/>
+                <ContentControl DockPanel.Dock="Right" Style="{StaticResource SettingStyle}"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>

@@ -23,6 +23,7 @@ namespace Tools
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = new MainWindowViewModel();
         }
     }
 }

@@ -5,8 +5,59 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tools"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="400" ResizeMode="NoResize">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <ListBox x:Name="plugins_listbox" ItemsSource="{Binding Plugins}" Style="{StaticResource StackPanelVerticalListBox}" SelectionMode="Single" SelectedIndex="0" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="0,2,0,2" Background="White">
+                        <DockPanel LastChildFill="False">
+                            <Label DockPanel.Dock="Left" Content="{Binding Name}" BorderThickness="0" HorizontalContentAlignment="Left"/>
+                            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" DockPanel.Dock="Right" Height="24" Width="46" Margin="0,0,2,0" IsChecked="{Binding Active}"/>
+                        </DockPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Grid.Row="1"  BorderThickness="{Binding ElementName=plugins_listbox,Path=BorderThickness}" BorderBrush="{Binding ElementName=plugins_listbox,Path=BorderBrush}">
+            <StackPanel>
+                <DockPanel LastChildFill="False">
+                    <Label Content="插件名称：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                    <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Name}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                </DockPanel>
+                <DockPanel LastChildFill="False">
+                    <Label Content="插件版本：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                    <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Version}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                </DockPanel>
+                <DockPanel LastChildFill="False">
+                    <Label Content="插件作者：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                    <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Author}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                </DockPanel>
+                <DockPanel LastChildFill="False">
+                    <Label Content="更新日期：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                    <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.LastTime}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                </DockPanel>
+            </StackPanel>
+        </Border>
+
+        <DockPanel Grid.Column="1" Grid.RowSpan="2">
+            <ListBox ItemsSource="{Binding ElementName=plugins_listbox,Path=SelectedItem.Settings,Mode=TwoWay}" Style="{StaticResource StackPanelVerticalListBox}" BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <local:Option key="{Binding Key}" value="{Binding Value, Mode=TwoWay}" type="{Binding Type}" code="{Binding code,Mode=TwoWay}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
     </Grid>
 </Window>
