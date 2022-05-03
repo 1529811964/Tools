@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Tools_IPlugin
@@ -26,16 +21,20 @@ namespace Tools_IPlugin
         /// <summary>
         /// 插件生成日期
         /// </summary>
-        public DateTime LastTime { get; protected set;  }
-        string _active;
+        public DateTime LastTime { get; protected set; }
+        /// <summary>
+        /// 插件简介
+        /// </summary>
+        public string Description { get; protected set; }
+        bool _active;
         /// <summary>
         /// 插件启用状态
         /// </summary>
-        public string Active { get => _active; set { _active = value; OnPropertyChanged(); } }
+        public bool Active { get => _active; set { _active = value; OnPropertyChanged(); } }
         /// <summary>
         /// 插件配置，应当在构造函数中初始化为默认配置
         /// </summary>
-        public ObservableCollection<Setting> Settings { get; set; } = new ObservableCollection<Setting>();
+        public ObservableCollection<Setting> Settings { get; } = new ObservableCollection<Setting>();
 
         /// <summary>
         /// 启动插件
@@ -53,7 +52,7 @@ namespace Tools_IPlugin
         /// </summary>
         /// <param name="code">快捷键代码</param>
         public abstract void Hotkeys(string code);
-        
+
         public abstract void Dispose();
     }
 }

@@ -10,13 +10,19 @@
              d:DesignHeight="25.24" d:DesignWidth="233">
     <UserControl.Resources>
         <DataTemplate x:Key="StringSetting">
-            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Width="122"/>
+            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Margin="0,0,2,0" Width="122"/>
         </DataTemplate>
         <DataTemplate x:Key="SwitchSetting">
-            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Height="24" Width="46"/>
+            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                          IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Margin="0,0,2,0" Height="24" Width="46"/>
         </DataTemplate>
         <DataTemplate x:Key="HotkeySetting">
-            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Tag="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=code, Mode=TwoWay}" Width="122"/>
+            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" 
+                     Width="122" 
+                     Margin="0,0,2,0"
+                     GotKeyboardFocus="HotKey_GotKeyBoardFocus" 
+                     LostKeyboardFocus="HotKey_LostKeyboardFocus" 
+                     PreviewKeyDown="HotKey_PreviewKeyDown"/>
         </DataTemplate>
         <Style x:Key="SettingStyle" TargetType="ContentControl">
             <Setter Property="ContentTemplate" Value="{StaticResource StringSetting}"/>
@@ -36,7 +42,7 @@
     <Grid>
         <Border Margin="0,2,0,2">
             <DockPanel LastChildFill="False">
-                <Label DockPanel.Dock="Left" BorderThickness="0,0,0,0" Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=key}"/>
+                <Label DockPanel.Dock="Left" BorderThickness="0,0,0,0" Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=option_name}"/>
                 <ContentControl DockPanel.Dock="Right" Style="{StaticResource SettingStyle}"/>
             </DockPanel>
         </Border>

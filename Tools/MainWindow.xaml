@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:local="clr-namespace:Tools"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="400" ResizeMode="NoResize">
+        Title="MainWindow" Height="450" Width="400" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
@@ -15,6 +16,17 @@
             <RowDefinition Height="2*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        
+        <!--托盘图标-->
+        <hc:NotifyIcon Text="Tools" Visibility="Visible" Icon="/favicon.ico" MouseDoubleClick="Setting_Show"  >
+            <hc:NotifyIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="设置" Width="100" Click="Setting_Show"/>
+
+                    <MenuItem Header="退出" Width="100" Click="Quit_Click"/>
+                </ContextMenu>
+            </hc:NotifyIcon.ContextMenu>
+        </hc:NotifyIcon>
 
         <ListBox x:Name="plugins_listbox" ItemsSource="{Binding Plugins}" Style="{StaticResource StackPanelVerticalListBox}" SelectionMode="Single" SelectedIndex="0" >
             <ListBox.ItemTemplate>
@@ -22,7 +34,7 @@
                     <Border Margin="0,2,0,2" Background="White">
                         <DockPanel LastChildFill="False">
                             <Label DockPanel.Dock="Left" Content="{Binding Name}" BorderThickness="0" HorizontalContentAlignment="Left"/>
-                            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" DockPanel.Dock="Right" Height="24" Width="46" Margin="0,0,2,0" IsChecked="{Binding Active}"/>
+                            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" Content="{Binding}" DockPanel.Dock="Right" Height="24" Width="46" Margin="0,0,2,0" IsChecked="{Binding Active,Mode=TwoWay}"/>
                         </DockPanel>
                     </Border>
                 </DataTemplate>
@@ -30,31 +42,38 @@
         </ListBox>
 
         <Border Grid.Row="1"  BorderThickness="{Binding ElementName=plugins_listbox,Path=BorderThickness}" BorderBrush="{Binding ElementName=plugins_listbox,Path=BorderBrush}">
-            <StackPanel>
-                <DockPanel LastChildFill="False">
-                    <Label Content="插件名称：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                    <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Name}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
-                </DockPanel>
-                <DockPanel LastChildFill="False">
-                    <Label Content="插件版本：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                    <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Version}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
-                </DockPanel>
-                <DockPanel LastChildFill="False">
-                    <Label Content="插件作者：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                    <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Author}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
-                </DockPanel>
-                <DockPanel LastChildFill="False">
-                    <Label Content="更新日期：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                    <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.LastTime}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
-                </DockPanel>
-            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Label Content="插件信息" BorderThickness="0"/>
+                    <DockPanel LastChildFill="False">
+                        <Label Content="插件名称：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Name}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                    </DockPanel>
+                    <DockPanel LastChildFill="False">
+                        <Label Content="插件版本：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Version}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                    </DockPanel>
+                    <DockPanel LastChildFill="False">
+                        <Label Content="插件作者：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Author}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                    </DockPanel>
+                    <DockPanel LastChildFill="False">
+                        <Label Content="更新日期：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.LastTime}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                    </DockPanel>
+                    <DockPanel LastChildFill="False">
+                        <Label Content="插件简介：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
+                        <TextBlock Text="{Binding ElementName=plugins_listbox,Path=SelectedItem.Description}" Width="79" TextWrapping="Wrap" DockPanel.Dock="Right"/>
+                    </DockPanel>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <DockPanel Grid.Column="1" Grid.RowSpan="2">
-            <ListBox ItemsSource="{Binding ElementName=plugins_listbox,Path=SelectedItem.Settings,Mode=TwoWay}" Style="{StaticResource StackPanelVerticalListBox}" BorderThickness="0">
+            <ListBox ItemsSource="{Binding ElementName=plugins_listbox,Path=SelectedItem.Settings}" Style="{StaticResource StackPanelVerticalListBox}" BorderThickness="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <local:Option key="{Binding Key}" value="{Binding Value, Mode=TwoWay}" type="{Binding Type}" code="{Binding code,Mode=TwoWay}"/>
+                        <local:Option Content="{Binding ElementName=plugins_listbox,Path=SelectedItem}" option_name="{Binding Key}" value="{Binding Value, Mode=TwoWay}" type="{Binding Type}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

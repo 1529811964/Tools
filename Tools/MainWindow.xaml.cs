@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Tools
 {
@@ -23,7 +11,40 @@ namespace Tools
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
+            this.DataContext = MainWindowViewModel.GetInstance();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //TODO:测试时注释
+            //this.Hide();
+            HotKeyManagement.Handle = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+            PluginOperate.GetInstance("Plugin").LoadPlugin();
+        }
+
+        private void Setting_Show(object sender, RoutedEventArgs e)
+        {
+            this.Show();
+            this.Activate();
+        }
+
+        bool cancel = true;
+
+        private void Quit_Click(object sender, RoutedEventArgs e)
+        {
+            cancel = false;
+            this.Close();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = cancel;
+            if (!cancel)
+            {
+                this.Hide();
+                return;
+            }
+            PluginOperate.GetInstance().DisposePlugin();
         }
     }
 }
