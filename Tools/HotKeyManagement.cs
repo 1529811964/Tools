@@ -53,7 +53,7 @@ namespace Tools
                     var HotKeyList = keyManagement.HotKeyList[id];
                     foreach (Hotkeymod hotkeymod in HotKeyList)
                     {
-                        hotkeymod.Modplugin.Hotkeys(hotkeymod.key);
+                        hotkeymod.Modplugin?.Hotkeys(hotkeymod.key);
                     }
                 }
             }
@@ -173,7 +173,7 @@ namespace Tools
             {
                 return -1;
             }
-            var key = hotkey.Split(new char[] { '+', ' ' });
+            var key = hotkey.Split(new char[] { '+', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (key.Length <= 1 || key.Length > 4)
             {
                 return -1;
@@ -194,7 +194,8 @@ namespace Tools
                         fsModifiers |= KeyModifiers.Shift;
                         break;
                     default:
-                        break;
+                        // 非功能键出现在了前面则这个快捷键不合格，返回-1
+                        return -1;
                 }
             }
             int id = (int)fsModifiers;

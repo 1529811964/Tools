@@ -13,16 +13,20 @@ namespace Tools
     {
         public static readonly DependencyProperty option_nameProperty =
       DependencyProperty.Register("option_name", typeof(string), typeof(Option), new PropertyMetadata(""));
-        public static readonly DependencyProperty valueProperty =
-            DependencyProperty.Register("value", typeof(string), typeof(Option), new PropertyMetadata(""));
+        public static readonly DependencyProperty option_valueProperty =
+            DependencyProperty.Register("option_value", typeof(string), typeof(Option), new PropertyMetadata(""));
         public static readonly DependencyProperty typeProperty =
             DependencyProperty.Register("type", typeof(SettingType), typeof(Option), new PropertyMetadata(SettingType.String));
+        public static readonly DependencyProperty modPluginProperty =
+            DependencyProperty.Register("modPlugin", typeof(ModPlugin), typeof(Option), new PropertyMetadata(defaultValue: null));
 
-        public string option_name { get; set; }
+        public string option_name { get => GetValue(option_nameProperty) as string; set => SetValue(option_nameProperty, value); }
 
-        public string value { get; set; }
+        public string option_value { get => GetValue(option_valueProperty) as string; set => SetValue(option_valueProperty, value); }
 
-        public SettingType type { get; set; }
+        public SettingType type { get => (SettingType)GetValue(typeProperty); set => SetValue(typeProperty, value); }
+
+        public ModPlugin modPlugin { get => GetValue(modPluginProperty) as ModPlugin; set => SetValue(modPluginProperty, value); }
 
         public Option()
         {
@@ -36,7 +40,10 @@ namespace Tools
         private void HotKey_GotKeyBoardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             string hotkey = (sender as TextBox).Text;
-            keyManagement.UnregisterHotKey(hotkey, this.Content as ModPlugin, option_name);
+            if (modPlugin != null && modPlugin.Active)
+            {
+                keyManagement.UnregisterHotKey(hotkey, modPlugin, option_name);
+            }
 
             keyManagement.UnregisterAllHotKey();
         }
@@ -53,8 +60,11 @@ namespace Tools
             }
             else
             {
-                // 注册快捷键
-                keyManagement.RegisterHotKey(HotKey.Text, this.Content as ModPlugin, option_name);
+                // 注册快捷键,当插件未启用时不注册
+                if (modPlugin != null && modPlugin.Active)
+                {
+                    keyManagement.RegisterHotKey(HotKey.Text, modPlugin, option_name);
+                }
             }
         }
 

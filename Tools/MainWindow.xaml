@@ -7,13 +7,22 @@
         xmlns:local="clr-namespace:Tools"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="400" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Window.Resources>
+        <Style x:Key="Plugininfo_LabelStyle" TargetType="{x:Type Label}">
+            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Width" Value="79"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1.48*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         
@@ -22,7 +31,6 @@
             <hc:NotifyIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="设置" Width="100" Click="Setting_Show"/>
-
                     <MenuItem Header="退出" Width="100" Click="Quit_Click"/>
                 </ContextMenu>
             </hc:NotifyIcon.ContextMenu>
@@ -34,7 +42,7 @@
                     <Border Margin="0,2,0,2" Background="White">
                         <DockPanel LastChildFill="False">
                             <Label DockPanel.Dock="Left" Content="{Binding Name}" BorderThickness="0" HorizontalContentAlignment="Left"/>
-                            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" Content="{Binding}" DockPanel.Dock="Right" Height="24" Width="46" Margin="0,0,2,0" IsChecked="{Binding Active,Mode=TwoWay}"/>
+                            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" DockPanel.Dock="Right" Height="24" Width="46" Margin="0,0,2,0" IsChecked="{Binding Active,Mode=TwoWay}"/>
                         </DockPanel>
                     </Border>
                 </DataTemplate>
@@ -47,23 +55,23 @@
                     <Label Content="插件信息" BorderThickness="0"/>
                     <DockPanel LastChildFill="False">
                         <Label Content="插件名称：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Name}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Name}" Style="{StaticResource Plugininfo_LabelStyle}" DockPanel.Dock="Right"/>
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="插件版本：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Version}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Version}" Style="{StaticResource Plugininfo_LabelStyle}" DockPanel.Dock="Right"/>
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="插件作者：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Author}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.Author}" Style="{StaticResource Plugininfo_LabelStyle}" DockPanel.Dock="Right"/>
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="更新日期：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.LastTime}" BorderThickness="0" HorizontalContentAlignment="Left" Width="79" DockPanel.Dock="Right"/>
+                        <Label Content="{Binding ElementName=plugins_listbox,Path=SelectedItem.LastTime.Date}" Style="{StaticResource Plugininfo_LabelStyle}" DockPanel.Dock="Right"/>
                     </DockPanel>
                     <DockPanel LastChildFill="False">
                         <Label Content="插件简介：" BorderThickness="0" HorizontalAlignment="Left" Width="71" DockPanel.Dock="Left"/>
-                        <TextBlock Text="{Binding ElementName=plugins_listbox,Path=SelectedItem.Description}" Width="79" TextWrapping="Wrap" DockPanel.Dock="Right"/>
+                        <TextBlock Text="{Binding ElementName=plugins_listbox,Path=SelectedItem.Description}" Padding="0,6" Width="79" TextWrapping="Wrap" DockPanel.Dock="Right"/>
                     </DockPanel>
                 </StackPanel>
             </ScrollViewer>
@@ -73,7 +81,7 @@
             <ListBox ItemsSource="{Binding ElementName=plugins_listbox,Path=SelectedItem.Settings}" Style="{StaticResource StackPanelVerticalListBox}" BorderThickness="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <local:Option Content="{Binding ElementName=plugins_listbox,Path=SelectedItem}" option_name="{Binding Key}" value="{Binding Value, Mode=TwoWay}" type="{Binding Type}"/>
+                        <local:Option modPlugin="{Binding ElementName=plugins_listbox,Path=SelectedItem,Mode=TwoWay}" option_name="{Binding Key}" option_value="{Binding Value, Mode=TwoWay}" type="{Binding Type}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

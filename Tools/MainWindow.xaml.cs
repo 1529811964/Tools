@@ -19,6 +19,7 @@ namespace Tools
             //TODO:测试时注释
             //this.Hide();
             HotKeyManagement.Handle = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+            FileListenerServer.dispatcher = this.Dispatcher;
             PluginOperate.GetInstance("Plugin").LoadPlugin();
         }
 
@@ -39,7 +40,7 @@ namespace Tools
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             e.Cancel = cancel;
-            if (!cancel)
+            if (cancel)
             {
                 this.Hide();
                 return;

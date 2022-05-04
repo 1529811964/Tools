@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Windows.Threading;
 using Tools_IPlugin;
 
 namespace Tools
@@ -91,7 +92,8 @@ namespace Tools
             try
             {
                 // 加载插件
-                var assembly = Assembly.Load(plugin_path);
+                var fileData = File.ReadAllBytes(plugin_path);
+                var assembly = Assembly.Load(fileData);
 
                 foreach (var item in assembly.GetTypes())
                 {

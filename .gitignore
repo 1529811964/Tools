@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /TestDemo
 /ConsoleApp1
+/Test_Plugin1
+/Test_Plugin2

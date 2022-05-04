@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Threading;
 
 namespace Tools
 {
@@ -10,9 +11,11 @@ namespace Tools
         /// </summary>
         private FileSystemWatcher _watcher;
 
-        private MainWindowViewModel model = MainWindowViewModel.GetInstance();
+        private MainWindowViewModel model;
 
-        private PluginOperate pluginOperate = PluginOperate.GetInstance();
+        private PluginOperate pluginOperate;
+
+        public static Dispatcher dispatcher;
 
         public FileListenerServer(string path)
         {
@@ -35,12 +38,18 @@ namespace Tools
 
         public void Start()
         {
+            model = MainWindowViewModel.GetInstance();
+            pluginOperate = PluginOperate.GetInstance();
             //开始监听
             this._watcher.EnableRaisingEvents = true;
         }
 
         public void Stop()
         {
+            if (this._watcher == null)
+            {
+                return;
+            }
             //关闭监听
             this._watcher.EnableRaisingEvents = false;
             this._watcher.Dispose();
@@ -59,7 +68,7 @@ namespace Tools
             {
                 return;
             }
-            pluginOperate.LoadPlugin(dll.FullName);
+            dispatcher?.Invoke(() => pluginOperate.LoadPlugin(dll.FullName));
         }
         /// <summary>
         /// 修改插件事件
@@ -73,10 +82,14 @@ namespace Tools
             {
                 return;
             }
-            // 卸载旧插件
-            pluginOperate.DisposePlugin(dll.Name);
-            // 加载新插件
-            pluginOperate.LoadPlugin(e.FullPath);
+
+            dispatcher?.Invoke(() =>
+            {
+                // 卸载旧插件
+                pluginOperate.DisposePlugin(dll.Name);
+                // 加载新插件
+                pluginOperate.LoadPlugin(e.FullPath);
+            });
 
             //避免多次触发
             this._watcher.EnableRaisingEvents = false;
@@ -94,7 +107,7 @@ namespace Tools
             {
                 return;
             }
-            pluginOperate.DisposePlugin(dll.Name);
+            dispatcher?.Invoke(() => pluginOperate.DisposePlugin(dll.Name));
         }
         /// <summary>
         /// 重命名文件事件
@@ -115,16 +128,19 @@ namespace Tools
                 }
                 return;
             }
-            if (e.OldName.EndsWith(".dll") && !e.Name.EndsWith(".dll"))
+            dispatcher?.Invoke(() =>
             {
-                pluginOperate.DisposePlugin(e.OldName);
-                return;
-            }
-            if (!e.OldName.EndsWith(".dll") && e.Name.EndsWith(".dll"))
-            {
-                pluginOperate.LoadPlugin(e.FullPath);
-                return;
-            }
+                if (e.OldName.EndsWith(".dll") && !e.Name.EndsWith(".dll"))
+                {
+                    pluginOperate.DisposePlugin(e.OldName);
+                    return;
+                }
+                if (!e.OldName.EndsWith(".dll") && e.Name.EndsWith(".dll"))
+                {
+                    pluginOperate.LoadPlugin(e.FullPath);
+                    return;
+                }
+            });
         }
     }
 }

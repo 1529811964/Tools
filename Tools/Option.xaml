@@ -10,14 +10,14 @@
              d:DesignHeight="25.24" d:DesignWidth="233">
     <UserControl.Resources>
         <DataTemplate x:Key="StringSetting">
-            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Margin="0,0,2,0" Width="122"/>
+            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=option_value, Mode=TwoWay}" Margin="0,0,2,0" Width="122"/>
         </DataTemplate>
         <DataTemplate x:Key="SwitchSetting">
             <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
-                          IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" Margin="0,0,2,0" Height="24" Width="46"/>
+                          IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=option_value, Mode=TwoWay}" Margin="0,0,2,0" Height="24" Width="46"/>
         </DataTemplate>
         <DataTemplate x:Key="HotkeySetting">
-            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=value, Mode=TwoWay}" 
+            <TextBox Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:Option}},Path=option_value, Mode=TwoWay}" 
                      Width="122" 
                      Margin="0,0,2,0"
                      GotKeyboardFocus="HotKey_GotKeyBoardFocus" 
